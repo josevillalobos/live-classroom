@@ -25,6 +25,8 @@ async function waitForServer() {
   throw new Error("The production server did not become ready within 30 seconds");
 }
 
+// Spawned in its own process group so the whole tree (npm wrapper + next server) can be killed:
+// killing only the wrapper orphans the server on Linux and hangs CI on its open output pipes.
 const server = spawn(
   "npm",
   ["run", "start", "--", "-H", "127.0.0.1", "-p", String(port)],
@@ -32,6 +34,7 @@ const server = spawn(
     cwd: process.cwd(),
     env: { ...process.env, PORT: String(port), FAL_KEY: "" },
     stdio: ["ignore", "pipe", "pipe"],
+    detached: true,
   },
 );
 
@@ -84,5 +87,9 @@ try {
   process.stderr.write(`${serverOutput}\n`);
   throw error;
 } finally {
-  server.kill("SIGTERM");
+  try {
+    process.kill(-server.pid, "SIGTERM");
+  } catch {
+    server.kill("SIGTERM");
+  }
 }
