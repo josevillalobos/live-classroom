@@ -484,14 +484,14 @@ html, body { overflow: hidden; background: #2a1c12; }
 }
 
 /* Overlay panels */
-.tung-avatar {
+.teacher-avatar {
   flex: none;
   width: 44px;
   height: 80px;
-  background: url("/tung-standing.png") center bottom / contain no-repeat;
+  background: url("/teacher-standing.png") center bottom / contain no-repeat;
   filter: drop-shadow(0 3px 5px rgba(9, 5, 3, .5));
 }
-.tung-avatar-mini { align-self: flex-end; width: 38px; height: 70px; }
+.teacher-avatar-mini { align-self: flex-end; width: 38px; height: 70px; }
 
 @keyframes typing-bounce { 40% { transform: translateY(-3px); opacity: .55; } }
 
@@ -517,7 +517,7 @@ html, body { overflow: hidden; background: #2a1c12; }
 /* Program guide */
 .lobby-overlay { justify-content: flex-end; gap: 16px; }
 .lobby-host { display: flex; gap: 14px; align-items: flex-end; }
-.tung-avatar-host { width: 64px; height: 118px; }
+.teacher-avatar-host { width: 64px; height: 118px; }
 .lobby-prompt { display: grid; gap: 6px; padding-bottom: 6px; }
 .lobby-prompt h1 { margin: 0; color: #fff5d6; font-size: clamp(26px, 2.6vw, 34px); letter-spacing: -.03em; line-height: 1.05; }
 .lobby-composer { display: flex; gap: 9px; align-items: stretch; }
@@ -534,6 +534,21 @@ html, body { overflow: hidden; background: #2a1c12; }
 }
 .lobby-composer textarea:focus { box-shadow: 0 0 0 2px rgba(227, 167, 42, .45); }
 .lobby-composer textarea::placeholder { color: rgba(255, 244, 216, .38); }
+
+.lobby-picks { display: flex; flex-wrap: wrap; gap: 7px; }
+.lobby-picks button {
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 246, 213, .26);
+  border-radius: 999px;
+  background: rgba(12, 9, 6, .72);
+  color: rgba(253, 243, 217, .82);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+.lobby-picks button:hover { border-color: rgba(255, 228, 168, .7); background: rgba(46, 32, 18, .82); color: #fdf3d9; }
 
 .guide { gap: 12px; }
 .guide-header { display: flex; flex: none; gap: 11px; align-items: flex-end; padding: 0 2px 10px; border-bottom: 1px solid rgba(255, 246, 213, .2); }

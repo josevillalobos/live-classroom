@@ -259,12 +259,12 @@ export class ClassroomRuntime {
     atMs: number,
   ): CommandOutcome {
     if (session.production.kind !== "idle") {
-      session.warning = "This lesson has already started. Choose New lesson for another topic.";
+      session.warning = "Esta clase ya ha empezado. Pulsa Nueva clase para cambiar de tema.";
       this.touch(session);
       return { kind: "snapshot", snapshot: this.snapshot(session) };
     }
     if (!this.dependencies.configured()) {
-      session.warning = "FAL_KEY is missing. Add it to .env.local and restart the local app.";
+      session.warning = "Falta FAL_KEY. Añádela a .env.local y reinicia la app en local.";
       this.log(session, "error", session.warning, atMs);
       this.touch(session);
       return { kind: "snapshot", snapshot: this.snapshot(session) };
@@ -375,7 +375,7 @@ export class ClassroomRuntime {
     } catch (error) {
       result = {
         ok: false,
-        message: error instanceof Error ? error.message : "Lesson preparation failed.",
+        message: error instanceof Error ? error.message : "La preparación de la clase ha fallado.",
         plannerAttemptsUsed: 2,
       };
     }
@@ -387,7 +387,7 @@ export class ClassroomRuntime {
     if (!result.ok) {
       session.production = { kind: "draining", reason: "planning-failed" };
       session.playback = { kind: "ended", finalSceneNumber: null };
-      session.warning = `The lesson could not be prepared: ${result.message}`;
+      session.warning = `No se ha podido preparar la clase: ${result.message}`;
       this.log(session, "error", session.warning, Date.now());
       this.touch(session);
       return;
@@ -451,7 +451,7 @@ export class ClassroomRuntime {
         const attemptEstimate = CLASSROOM_CONFIG.videoAttemptCostCents;
         if (session.estimatedSpendCents + attemptEstimate > CLASSROOM_CONFIG.localCeilingCents) {
           session.production = { kind: "draining", reason: "user-stop" };
-          session.warning = "The private local generation ceiling was reached.";
+          session.warning = "Se ha alcanzado el techo de gasto local de esta sesión.";
           this.log(session, "warning", session.warning, Date.now());
           this.touch(session);
           return;
@@ -465,7 +465,7 @@ export class ClassroomRuntime {
             purpose,
           });
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Scene compilation failed.";
+          const message = error instanceof Error ? error.message : "La compilación del plano ha fallado.";
           session.scenes.push({
             kind: "rejected",
             id: sceneId,
@@ -474,7 +474,7 @@ export class ClassroomRuntime {
             message,
           });
           session.production = { kind: "draining", reason: "planning-failed" };
-          session.warning = `Scene ${sceneNumber} was rejected before H3: ${message}`;
+          session.warning = `El plano ${sceneNumber} se rechazó antes de llamar a H3: ${message}`;
           this.log(session, "error", session.warning, Date.now());
           this.touch(session);
           return;
@@ -515,7 +515,7 @@ export class ClassroomRuntime {
       result = {
         ok: false,
         reason: "render-failed",
-        message: error instanceof Error ? error.message : "H3 generation failed.",
+        message: error instanceof Error ? error.message : "La generación en H3 ha fallado.",
       };
     }
     const session = this.sessions.get(sessionId);
@@ -665,7 +665,7 @@ export class ClassroomRuntime {
         {
           sessionId: session.id,
           position: 1,
-          topic: session.topic ?? "Waiting for a lesson topic",
+          topic: session.topic ?? "Esperando un tema de clase",
           kind:
             session.production.kind === "idle"
               ? "waiting"

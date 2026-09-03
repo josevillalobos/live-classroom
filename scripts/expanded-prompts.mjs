@@ -1,5 +1,5 @@
 // Prints fal's rewritten ("expanded") H3 prompt for every scene of a session still held by the dev server,
-// plus which parts of the Tung spec survived the rewrite.
+// plus which parts of the character spec survived the rewrite.
 // Usage: node scripts/expanded-prompts.mjs <sessionId> [port]
 const [sessionId, port = "3000"] = process.argv.slice(2);
 if (!sessionId) throw new Error("usage: node scripts/expanded-prompts.mjs <sessionId> [port]");
@@ -15,11 +15,11 @@ const features = {
   cheeks: /cheek/i,
   teeth: /teeth/i,
   irises: /iris/i,
-  feet: /feet|toes/i,
-  grain: /grain strok/i,
-  bat: /\bbat\b/i,
+  shoes: /shoes|feet/i,
+  band: /orange band|rim|band/i,
+  marker: /marker|\bpen\b/i,
   "no clothing": /no clothing|no tie|no hat/i,
-  accent: /American/i,
+  spanish: /Castilian|Spanish/i,
 };
 const header = ["scene", "shots", ...Object.keys(features)].join(" | ");
 console.log(header);

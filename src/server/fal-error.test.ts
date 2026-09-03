@@ -16,7 +16,7 @@ test("treats a rejected fal key as a non-retryable auth failure", () => {
     status: 401,
     code: "FAL_AUTH_FAILED",
     message:
-      "fal rejected FAL_KEY (401: Unauthorized). Create a new API-scope key, update .env.local, and restart the app.",
+      "fal ha rechazado FAL_KEY (401: Unauthorized). Crea una clave nueva con ámbito de API, actualiza .env.local y reinicia la app.",
     retryable: false,
   });
 });

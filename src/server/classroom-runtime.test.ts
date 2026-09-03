@@ -50,7 +50,7 @@ function lesson(): LessonPlan {
       narration: `Lesson fact ${index + 1} moves forward.`,
       concept: `Distinct fact ${index + 1}`,
       summary: `Summary ${index + 1}`,
-      visualAction: `Tung demonstrates scene ${index + 1}.`,
+      visualAction: `Megafón demonstrates scene ${index + 1}.`,
       required: true,
     })),
     preparedBy: "test-planner",
@@ -87,7 +87,7 @@ function planFor(
     captions: [{ startSeconds: 0.2, endSeconds: 4.8, text: narration }],
     concept: narration,
     summary: narration,
-    visualAction: `Tung demonstrates scene ${sceneNumber}.`,
+    visualAction: `Megafón demonstrates scene ${sceneNumber}.`,
     ledgerAfter: {
       nextStepIndex: ledger.nextStepIndex + 1,
       conceptsPlanned: [...ledger.conceptsPlanned, narration],

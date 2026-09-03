@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LessonDeck, type SignoffState } from "@/components/lesson-deck";
 import { ClassroomSet } from "@/components/classroom-set";
-import { CLASSROOM_CONFIG, TEACHER } from "@/lib/classroom-config";
+import { CLASSROOM_CONFIG, LOBBY_TOPIC_PICKS, TEACHER } from "@/lib/classroom-config";
 import { useClassroom } from "@/hooks/use-classroom";
 import { useContinuousSoundtrack } from "@/hooks/use-continuous-soundtrack";
 
@@ -13,13 +13,13 @@ type PlaylistLesson = ReturnType<typeof useClassroom>["playlist"][number];
 
 function lineupStatus(lesson: PlaylistLesson): string {
   switch (lesson.kind) {
-    case "waiting": return "in the lineup";
-    case "preparing": return "writing";
-    case "generating": return `filming ${lesson.readyScenes}/${lesson.targetScenes}`;
-    case "ready": return "ready to air";
-    case "playing": return "on air";
-    case "complete": return "aired";
-    case "failed": return "could not air";
+    case "waiting": return "en la parrilla";
+    case "preparing": return "escribiendo";
+    case "generating": return `rodando ${lesson.readyScenes}/${lesson.targetScenes}`;
+    case "ready": return "lista para emitir";
+    case "playing": return "en emisión";
+    case "complete": return "emitida";
+    case "failed": return "no se pudo emitir";
   }
 }
 
@@ -167,7 +167,7 @@ export function Classroom() {
       <div className="experience-notices">
         {snapshot?.fixture && (
           <div className="notice notice-fixture" role="status">
-            Verification fixture: local media only. fal cannot be called in this mode.
+            Modo de verificación: solo medios locales. En este modo no se puede llamar a fal.
           </div>
         )}
         {classroom.connectionError && (
@@ -178,13 +178,13 @@ export function Classroom() {
       {!experienceActive && (
         <section className="chat-overlay lobby-overlay">
           <div className="lobby-host">
-            <span aria-hidden="true" className="tung-avatar tung-avatar-host" />
+            <span aria-hidden="true" className="teacher-avatar teacher-avatar-host" />
             <div className="lobby-prompt">
-              <h1>What do you want to learn about?</h1>
+              <h1>¿Qué quieres aprender hoy de marketing?</h1>
             </div>
           </div>
           <div className="lobby-composer">
-            <label className="sr-only" htmlFor="lesson-topic">Lesson topic</label>
+            <label className="sr-only" htmlFor="lesson-topic">Tema de la clase</label>
             <textarea
               disabled={topicLocked}
               id="lesson-topic"
@@ -195,7 +195,7 @@ export function Classroom() {
                 event.preventDefault();
                 startLesson();
               }}
-              placeholder="Teach me about…"
+              placeholder="Enséñame a…"
               rows={2}
               value={topic}
             />
@@ -208,9 +208,17 @@ export function Classroom() {
               →
             </button>
           </div>
+          {!topicLocked && (
+            <div className="lobby-picks">
+              {LOBBY_TOPIC_PICKS.map((pick) => (
+                // Filling the box, never starting: a lesson costs real money, so the → stays deliberate.
+                <button key={pick} onClick={() => setTopic(pick)} type="button">{pick}</button>
+              ))}
+            </div>
+          )}
           {snapshot && !snapshot.configured && (
             <p className="setup-note">
-              Add <code>FAL_KEY=your_api_scoped_key</code> to <code>.env.local</code>, then restart <code>npm run dev</code>. The key never reaches the browser.
+              Añade <code>FAL_KEY=tu_clave_de_api</code> a <code>.env.local</code> y reinicia <code>npm run dev</code>. La clave nunca llega al navegador.
             </p>
           )}
         </section>
@@ -219,13 +227,13 @@ export function Classroom() {
       {experienceActive && (
         <aside className="chat-overlay guide">
           <header className="guide-header">
-            <span aria-hidden="true" className="tung-avatar tung-avatar-mini" />
+            <span aria-hidden="true" className="teacher-avatar teacher-avatar-mini" />
             <div>
-              <strong>Program guide</strong>
+              <strong>Guía del canal</strong>
             </div>
             <div className="guide-actions">
               <button disabled={!classroom.actions.canClear} onClick={() => void classroom.actions.clear()} type="button">
-                New lesson
+                Nueva clase
               </button>
             </div>
           </header>
@@ -233,25 +241,25 @@ export function Classroom() {
           <div className="guide-body">
             <section className="guide-now">
               <div className="guide-now-head">
-                <strong>{snapshot?.lesson?.title ?? current?.topic ?? snapshot?.topic ?? "Tuning in"}</strong>
+                <strong>{snapshot?.lesson?.title ?? current?.topic ?? snapshot?.topic ?? "Sintonizando"}</strong>
                 <span className="guide-label">
-                  <i className="presence-dot" /> Now playing
+                  <i className="presence-dot" /> En emisión
                 </span>
               </div>
               {snapshot?.lesson?.title && <small>{current?.topic ?? snapshot?.topic}</small>}
-              <div className="guide-progress" aria-label={`${Math.round(progress * 100)} percent played`}>
+              <div className="guide-progress" aria-label={`${Math.round(progress * 100)} por ciento emitido`}>
                 <span style={{ width: `${progress * 100}%` }} />
               </div>
               <div className="guide-meta">
                 <span>{lineupStatus(current ?? { kind: "preparing" } as PlaylistLesson)}</span>
-                <span>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, "0")} left</span>
+                <span>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, "0")} restantes</span>
               </div>
             </section>
 
             <section className="guide-section">
-              <h2 className="guide-title">Up next</h2>
+              <h2 className="guide-title">A continuación</h2>
               {upcoming.length === 0 ? (
-                <p className="guide-empty">Nothing queued — {TEACHER.name} will auto-play a pick when this ends.</p>
+                <p className="guide-empty">Nada en cola: {TEACHER.name} emitirá una sugerencia cuando termine esta clase.</p>
               ) : (
                 <ol className="guide-queue">
                   {upcoming.map((lesson, index) => (
@@ -270,7 +278,7 @@ export function Classroom() {
 
             {aired.length > 0 && (
               <section className="guide-section guide-aired">
-                <h2 className="guide-title">Previously aired</h2>
+                <h2 className="guide-title">Ya emitidas</h2>
                 <ul>
                   {aired.map((lesson) => <li key={lesson.sessionId}>{lesson.topic}</li>)}
                 </ul>
@@ -279,9 +287,9 @@ export function Classroom() {
           </div>
 
           <div className="guide-add">
-            <h2 className="guide-title">Add to queue</h2>
+            <h2 className="guide-title">Añadir a la cola</h2>
             <div className="guide-add-row">
-            <label className="sr-only" htmlFor="custom-topic">Add a topic to the queue</label>
+            <label className="sr-only" htmlFor="custom-topic">Añadir un tema a la cola</label>
             <input
               disabled={!classroom.actions.canQueue || queueingTopic !== null}
               id="custom-topic"
@@ -290,7 +298,7 @@ export function Classroom() {
               onKeyDown={(event) => {
                 if (event.key === "Enter") addCustomTopic();
               }}
-              placeholder={classroom.actions.canQueue ? "Type a topic…" : "Queue is full"}
+              placeholder={classroom.actions.canQueue ? "Escribe un tema…" : "La cola está llena"}
               value={customTopic}
             />
             <button

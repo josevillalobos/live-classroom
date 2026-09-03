@@ -26,7 +26,7 @@ export function classifyFalError(error: unknown): ClassifiedFalError {
         return {
           status: error.status,
           code: "FAL_CONTENT_REJECTED",
-          message: `H3 declined this scene's content: ${detail}`,
+          message: `H3 ha rechazado el contenido de este plano: ${detail}`,
           retryable: false,
         };
       }
@@ -34,14 +34,14 @@ export function classifyFalError(error: unknown): ClassifiedFalError {
         return {
           status: error.status,
           code: "FAL_BALANCE_EXHAUSTED",
-          message: `fal balance is exhausted: ${detail}`,
+          message: `El saldo de fal se ha agotado: ${detail}`,
           retryable: false,
         };
       }
       return {
         status: error.status,
         code: "FAL_AUTH_FAILED",
-        message: `fal rejected FAL_KEY (${error.status}${detail ? `: ${detail}` : ""}). Create a new API-scope key, update .env.local, and restart the app.`,
+        message: `fal ha rechazado FAL_KEY (${error.status}${detail ? `: ${detail}` : ""}). Crea una clave nueva con ámbito de API, actualiza .env.local y reinicia la app.`,
         retryable: false,
       };
     }
@@ -71,7 +71,7 @@ export function classifyFalError(error: unknown): ClassifiedFalError {
   return {
     status: 502,
     code: "FAL_GENERATION_FAILED",
-    message: error instanceof Error ? error.message : "H3 Max generation failed.",
+    message: error instanceof Error ? error.message : "La generación con H3 Max ha fallado.",
     retryable: true,
   };
 }

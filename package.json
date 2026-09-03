@@ -1,7 +1,7 @@
 {
   "name": "live-classroom",
   "version": "0.1.0",
-  "description": "A live TV channel where a cartoon teacher explains any topic: lessons are planned by an LLM and rendered just-in-time as five-second MiniMax H3 Max clips inside a 3D classroom.",
+  "description": "Canal Megafón: un canal de televisión donde un profesor de dibujos animados da clases de marketing en castellano, planificadas por un LLM y renderizadas al vuelo como clips de cinco segundos con MiniMax H3 Max dentro de un aula 3D.",
   "license": "MIT",
   "private": true,
   "engines": {

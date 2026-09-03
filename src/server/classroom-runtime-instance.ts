@@ -90,10 +90,10 @@ function createRuntime(): ClassroomPlaylistRuntime {
 }
 
 declare global {
-  var tungClassroomRuntimeV5: ClassroomPlaylistRuntime | undefined;
+  var classroomRuntimeV5: ClassroomPlaylistRuntime | undefined;
 }
 
 export function getClassroomRuntime(): ClassroomPlaylistRuntime {
-  globalThis.tungClassroomRuntimeV5 ??= createRuntime();
-  return globalThis.tungClassroomRuntimeV5;
+  globalThis.classroomRuntimeV5 ??= createRuntime();
+  return globalThis.classroomRuntimeV5;
 }

@@ -166,9 +166,9 @@ function Classroom({ active, children }: ClassroomSetProps) {
       <ClassroomDoor position={[10.6, 0, -3.2]} rotationY={Math.PI} />
       <TeacherCorner textures={textures} />
       <Suspense fallback={null}>
-        <Poster position={[-10.58, 4.4, -1.2]} rotationZ={0.03} url="/posters/read.png" />
-        <Poster position={[-10.58, 4.15, 1.6]} rotationZ={-0.02} url="/posters/hang-in-there.png" />
-        <Poster position={[7.3, 3.75, -5.28]} rotationY={0} rotationZ={0.02} url="/posters/solar-system.png" />
+        <Poster position={[-10.58, 4.4, -1.2]} rotationZ={0.03} url="/posters/prueba.png" />
+        <Poster position={[-10.58, 4.15, 1.6]} rotationZ={-0.02} url="/posters/no-te-rindas.png" />
+        <Poster position={[7.3, 3.75, -5.28]} rotationY={0} rotationZ={0.02} url="/posters/embudo.png" />
       </Suspense>
       <SetDressing />
       <Bookshelf textures={textures} />

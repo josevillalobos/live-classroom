@@ -1,10 +1,10 @@
 export const runtime = "nodejs";
 
 declare global {
-  var tungSignoffImageCache: Map<string, Promise<Buffer | null>> | undefined;
+  var signoffImageCache: Map<string, Promise<Buffer | null>> | undefined;
 }
 
-const cache = (globalThis.tungSignoffImageCache ??= new Map());
+const cache = (globalThis.signoffImageCache ??= new Map());
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;

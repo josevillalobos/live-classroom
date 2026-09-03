@@ -122,9 +122,9 @@ function phaseMessage(
     case "live":
       return null;
     case "buffering":
-      return { title: "Please stand by", detail: "The next scene is decoding" };
+      return { title: "Un momento…", detail: "Descodificando el siguiente plano" };
     case "draining":
-      return { title: "Please stand by", detail: "Finishing the scenes already on tape" };
+      return { title: "Un momento…", detail: "Terminando los planos que ya están grabados" };
     case "complete":
       return null;
     default: {
@@ -148,10 +148,10 @@ function TuningScreen() {
       <span className="channel-badge">CH 13</span>
       <div className="surf-osd">
         <strong>
-          Tuning to {TEACHER.showName}
+          Sintonizando {TEACHER.showName}
           <span className="loading-dots"><i /><i /><i /></span>
         </strong>
-        <small>{TEACHER.name} is filming your lesson — stay tuned</small>
+        <small>{TEACHER.name} está rodando tu clase — no te vayas</small>
       </div>
     </div>
   );
@@ -174,21 +174,21 @@ function SignoffCard({ signoff, topic }: Readonly<{ signoff: SignoffState; topic
         />
       )}
       <span className="signoff-scrim" aria-hidden="true" />
-      <strong>Thanks for watching!</strong>
+      <strong>¡Gracias por ver la clase!</strong>
       {signoff?.kind === "queued" && (
         <div className="signoff-next">
-          <span className="signoff-label">Up next</span>
+          <span className="signoff-label">A continuación</span>
           <em>{signoff.topic}</em>
-          <small>Starting shortly</small>
+          <small>Empieza enseguida</small>
         </div>
       )}
       {signoff?.kind === "picks" && (
         <div className="signoff-next">
-          <span className="signoff-label">Watch next</span>
+          <span className="signoff-label">Sigue por aquí</span>
           {signoff.countdown !== null && signoff.picks[0] && (
             <small className="signoff-countdown">
-              Starting <b>{signoff.picks[0]}</b> in {signoff.countdown}s ·{" "}
-              <button onClick={signoff.onCancel} type="button">Cancel</button>
+              Empieza <b>{signoff.picks[0]}</b> en {signoff.countdown}s ·{" "}
+              <button onClick={signoff.onCancel} type="button">Cancelar</button>
             </small>
           )}
           <div className="signoff-picks">
@@ -616,9 +616,9 @@ export function LessonDeck({ phase, signoff, topic, warning, intent, music, onEv
 
       {skipped && (
         <div className="lesson-card-fallback">
-          <span>Scene {skipped.number} · illustrated recap</span>
+          <span>Plano {skipped.number} · resumen ilustrado</span>
           <strong>{skipped.summary}</strong>
-          <small>The H3 scene failed, so the planned lesson is shown locally.</small>
+          <small>El plano de H3 falló, así que se muestra en local lo que estaba planificado.</small>
         </div>
       )}
 
@@ -631,7 +631,7 @@ export function LessonDeck({ phase, signoff, topic, warning, intent, music, onEv
 
       {(warning || mediaError) && (
         <div className="stage-warning">
-          <strong>{mediaError ? "Playback issue" : "Setup needed"}</strong>
+          <strong>{mediaError ? "Problema de reproducción" : "Falta configuración"}</strong>
           <span>{mediaError ?? warning}</span>
         </div>
       )}
@@ -645,7 +645,7 @@ export function LessonDeck({ phase, signoff, topic, warning, intent, music, onEv
           }}
           type="button"
         >
-          ▶ Continue lesson
+          ▶ Continuar la clase
         </button>
       )}
 
@@ -653,20 +653,20 @@ export function LessonDeck({ phase, signoff, topic, warning, intent, music, onEv
 
       <div className="sound-controls">
         <button
-          aria-label={muted ? "Turn scene sound on" : "Mute scene sound"}
+          aria-label={muted ? "Activar el sonido de la clase" : "Silenciar la clase"}
           className="sound-toggle"
           onClick={() => setMuted((current) => !current)}
           type="button"
         >
-          {muted ? "Voice off" : "Voice on"}
+          {muted ? "Voz off" : "Voz on"}
         </button>
         <button
-          aria-label={music.enabled ? "Turn music off" : "Turn music on"}
+          aria-label={music.enabled ? "Quitar la música" : "Poner la música"}
           className="sound-toggle"
           onClick={music.toggle}
           type="button"
         >
-          {music.enabled ? "Music on" : "Music off"}
+          {music.enabled ? "Música on" : "Música off"}
         </button>
       </div>
     </div>

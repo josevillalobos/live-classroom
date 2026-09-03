@@ -1,5 +1,5 @@
 // Renders ONE H3 Max clip (paid: one 480P clip) from a sample beat using the production prompt compiler,
-// then prints fal's expanded prompt and which Tung character-sheet lines survived the rewrite.
+// then prints fal's expanded prompt and which character-sheet lines survived the rewrite.
 // Usage: node --experimental-strip-types scripts/probe-h3-expansion.mjs ["visual beat"] ["narration"]
 import { readFileSync } from "node:fs";
 import { fal } from "@fal-ai/client";
@@ -9,8 +9,8 @@ const env = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
 const key = env.match(/^FAL_KEY=(.+)$/m)?.[1]?.trim();
 if (!key) throw new Error("FAL_KEY missing from .env.local");
 
-const visualAction = process.argv[2] ?? "A simplified cartoon globe rotates, wrapped in a web of glowing interconnected fiber lines.";
-const narration = process.argv[3] ?? "It's a high-speed, light-based highway connecting our world in milliseconds.";
+const visualAction = process.argv[2] ?? "A simplified cartoon sales funnel fills with little customer figures at the top while only three drop out of the spout.";
+const narration = process.argv[3] ?? "De cada cien visitas, solo tres compran: ahí es donde se te escapa el dinero.";
 const prompt = compileH3ScenePrompt({ sceneNumber: 7, visualAction, narration });
 console.log("===== OUR PROMPT =====\n" + prompt + "\n");
 
@@ -31,10 +31,10 @@ const expanded = result.data?.expanded_prompt ?? "(no expansion returned)";
 console.log(`===== EXPANDED (${((Date.now() - startedAt) / 1000).toFixed(1)}s total) =====\n` + expanded + "\n");
 
 const features = {
-  nose: /nose/i, cheeks: /cheek/i, teeth: /teeth/i, irises: /iris/i, feet: /feet|toes/i,
-  "three fingers": /three-finger|three finger/i, "flat top": /flat rounded top|rounded top/i,
+  nose: /nose/i, cheeks: /cheek/i, teeth: /teeth/i, irises: /iris/i, shoes: /shoes|feet/i,
+  "three fingers": /three-finger|three finger/i, "bell": /bell|megaphone|cone/i,
   "no clothing": /no clothing|no tie|no hat/i, "no cuts": /no cuts|single continuous|one continuous|locked/i,
-  bat: /\bbat\b/i, accent: /American/i,
+  marker: /marker|\bpen\b/i, spanish: /Castilian|Spanish/i,
 };
 console.log("survived: " + Object.entries(features).map(([k, re]) => `${k}=${re.test(expanded) ? "Y" : "-"}`).join("  "));
 console.log("shots: " + (expanded.match(/\[Shot/g) ?? []).length);

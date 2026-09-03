@@ -75,7 +75,7 @@ function playlistView(
   const identity = {
     sessionId: entry.sessionId,
     position,
-    topic: entry.topic ?? snapshot.topic ?? "Waiting for a lesson topic",
+    topic: entry.topic ?? snapshot.topic ?? "Esperando un tema de clase",
   };
   if (entry.cancelledMessage) {
     return { ...identity, kind: "failed", message: entry.cancelledMessage };
@@ -87,7 +87,7 @@ function playlistView(
     return {
       ...identity,
       kind: "failed",
-      message: snapshot.warning ?? "The lesson could not be prepared.",
+      message: snapshot.warning ?? "No se ha podido preparar la clase.",
     };
   }
   if (snapshot.playback.kind === "playing") {
@@ -222,7 +222,7 @@ export class ClassroomPlaylistRuntime {
               id: childCommandId(command.id, `stop-${index + 1}`),
             });
           } else if (index > 0) {
-            entry.cancelledMessage = "Stopped before this queued lesson began generating.";
+            entry.cancelledMessage = "Se detuvo antes de que esta clase en cola empezara a generarse.";
           }
         }
         session.version += 1;
@@ -272,11 +272,11 @@ export class ClassroomPlaylistRuntime {
       .slice(activeIndex + 1)
       .filter((entry) => !entry.cancelledMessage).length;
     if (!session.entries[0]?.started) {
-      session.warning = "Start the current lesson before adding another one.";
+      session.warning = "Empieza la clase actual antes de añadir otra.";
     } else if (session.stopped) {
-      session.warning = "This playlist is stopping and cannot accept another lesson.";
+      session.warning = "La parrilla se está deteniendo y no admite otra clase.";
     } else if (queuedCount >= CLASSROOM_CONFIG.maxQueuedLessons) {
-      session.warning = `The local playlist holds ${CLASSROOM_CONFIG.maxQueuedLessons} upcoming lessons at a time.`;
+      session.warning = `La parrilla local admite ${CLASSROOM_CONFIG.maxQueuedLessons} clases en cola a la vez.`;
     } else if (
       session.entries.slice(activeIndex).some(
         (entry) =>
@@ -284,7 +284,7 @@ export class ClassroomPlaylistRuntime {
           entry.topic?.toLowerCase() === command.topic.toLowerCase(),
       )
     ) {
-      session.warning = "That lesson is already in the playlist.";
+      session.warning = "Esa clase ya está en la parrilla.";
     } else {
       const childId = toClassroomSessionId(
         `playlist-child-${randomUUID()}`,

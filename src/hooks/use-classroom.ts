@@ -18,7 +18,7 @@ import type {
   PlayableSegment,
 } from "@/lib/classroom-types";
 
-const SESSION_STORAGE_KEY = "tung-classroom-session-v1";
+const SESSION_STORAGE_KEY = "canal-megafon-session-v1";
 
 function newSafeId(prefix: string): string {
   return `${prefix}-${crypto.randomUUID()}`;
@@ -96,7 +96,7 @@ export function useClassroom() {
     let cancelled = false;
     void createSession(sessionId).catch((error) => {
       if (!cancelled) {
-        setConnectionError(error instanceof Error ? error.message : "The classroom could not be created.");
+        setConnectionError(error instanceof Error ? error.message : "No se ha podido abrir el aula.");
       }
     });
     return () => { cancelled = true; };
@@ -111,7 +111,7 @@ export function useClassroom() {
         if (!cancelled) await readResponse(response);
       } catch (error) {
         if (!cancelled) {
-          setConnectionError(error instanceof Error ? error.message : "The classroom stopped responding.");
+          setConnectionError(error instanceof Error ? error.message : "El aula ha dejado de responder.");
         }
       } finally {
         const current = snapshotRef.current;
@@ -148,7 +148,7 @@ export function useClassroom() {
     try {
       return await postCommand(command);
     } catch (error) {
-      setConnectionError(error instanceof Error ? error.message : "The classroom command failed.");
+      setConnectionError(error instanceof Error ? error.message : "El aula no ha podido ejecutar la orden.");
       return null;
     }
   }, [postCommand]);
@@ -191,7 +191,7 @@ export function useClassroom() {
     void postCommand(command, commandId).catch(() => {
       window.setTimeout(() => {
         void postCommand(command, commandId).catch((error) => {
-          setConnectionError(error instanceof Error ? error.message : "Playback state could not be reported.");
+          setConnectionError(error instanceof Error ? error.message : "No se ha podido informar del estado de reproducción.");
         });
       }, 500);
     });
@@ -211,7 +211,7 @@ export function useClassroom() {
     try {
       await createSession(nextId);
     } catch (error) {
-      setConnectionError(error instanceof Error ? error.message : "The classroom could not be reset.");
+      setConnectionError(error instanceof Error ? error.message : "No se ha podido reiniciar el aula.");
     }
   }, [createSession, sessionId]);
 

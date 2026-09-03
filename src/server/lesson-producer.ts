@@ -280,31 +280,40 @@ function preparationPrompt(
   sceneCount: number,
   repair: string,
 ): string {
-  return `Design one continuous ${sceneCount * CLASSROOM_CONFIG.clipDurationSeconds}-second visual lesson about:\n${topic}\n${repair}
-Return only JSON:
+  return `Diseña una clase de marketing visual, continua, de ${sceneCount * CLASSROOM_CONFIG.clipDurationSeconds} segundos sobre:\n${topic}\n${repair}
+Devuelve solo JSON:
 {
-  "title":"short playful lesson title",
-  "bigQuestion":"the precise question this lesson answers",
-  "suggestedTopics":["related follow-up question","related follow-up question","related follow-up question"],
+  "title":"título corto y con gancho de la clase, en español",
+  "bigQuestion":"la pregunta de marketing exacta que responde esta clase, en español",
+  "suggestedTopics":["pregunta de marketing para la siguiente clase","otra","otra"],
   "steps":[
-    {"role":"hook|foundation|mechanism|example|connection|misconception|application|transition|synthesis|recap","narration":"one relaxed line spoken in this beat","concept":"the exact fact delivered","visualAction":"one specific animated demonstration"}
+    {"role":"hook|foundation|mechanism|example|connection|misconception|application|transition|synthesis|recap","narration":"una frase relajada en español que se dice en este plano","concept":"el dato exacto que se enseña, en español","visualAction":"one specific animated demonstration, written in English"}
   ]
 }
 
-Requirements:
-- Exactly ${sceneCount} ordered steps for ${sceneCount} consecutive five-second scenes.
-- This is one lesson arc, not ${sceneCount} miniature versions of the whole lesson.
-- Start with a hook, build foundations and mechanisms, use examples and applications, correct a misconception, synthesize, and end with a recap.
-- Write the narration, concept, and visual action for every beat now. No later LLM call will rewrite individual scenes.
-- Each beat must advance the previous beat and fit one visual demonstration with narration that can be spoken naturally within five seconds.
-- The narration is the teacher's own spoken words, in first person, addressed to the learner. The teacher never says his own name, never refers to himself, the show, the classroom, or how this video was made, and never claims credit for the topic (no "Tung's model", "Tung creates").
-- In visualAction, the teacher is a cartoon character named ${TEACHER.name}: refer to the teacher only by that name, never describe the teacher's appearance, clothing, or props, and never add other characters.
-- Vary staging, diagrams, camera distance, and editorial cuts across adjacent beats.
-- Do not repeat narration, openings, or visual actions.
-- Use reinforcement beats where the longer duration benefits from breathing room.
-- Include exactly three distinct, natural follow-up lesson questions in suggestedTopics. They should deepen or branch from this lesson without repeating its topic.
-- Be accurate for a curious general audience.
-- Output the JSON immediately with no preamble or analysis.`;
+Idioma:
+- "narration", "title", "bigQuestion", "concept", "summary" y "suggestedTopics" van en castellano (español de España), tuteando al espectador. Nada de "ustedes" ni de español latino.
+- "visualAction" va SIEMPRE en inglés: es el prompt del modelo de vídeo, no se le lee a nadie. Cualquier rótulo que pidas dibujar en pantalla, descríbelo en inglés pero con el texto en español y de dos o tres palabras como mucho.
+- Los anglicismos estándar del sector se dejan tal cual (funnel, copy, lead, CTR, ROAS, CAC, LTV, landing) y se explican la primera vez que aparecen.
+
+Requisitos:
+- Exactamente ${sceneCount} pasos ordenados para ${sceneCount} planos consecutivos de cinco segundos.
+- Es una sola clase con un arco, no ${sceneCount} versiones en miniatura de la clase entera.
+- Empieza con un gancho, monta las bases y el mecanismo, usa ejemplos y aplicaciones, corrige un error frecuente, sintetiza y cierra con un recap.
+- Escribe ya la narración, el concepto y la acción visual de cada plano. Ninguna llamada posterior va a reescribir escenas sueltas.
+- Cada plano avanza sobre el anterior y cabe en una demostración visual con una narración que se pueda decir con naturalidad en cinco segundos.
+- La narración son las palabras del profesor en primera persona, dirigidas a quien aprende. El profesor nunca dice su propio nombre, nunca se refiere a sí mismo, al programa, al aula ni a cómo se hizo el vídeo, y nunca se atribuye el mérito del tema (nada de "el modelo de ${TEACHER.name}").
+- En visualAction el profesor es un personaje de dibujos animados llamado ${TEACHER.name}: nómbralo solo así, no describas su aspecto, su ropa ni sus objetos, y no añadas otros personajes.
+- Esto es un canal de marketing: estrategia, posicionamiento, oferta, precios, marca, copy, embudos, captación de pago, orgánico, email, retención, analítica. Si el tema que pide el espectador no es de marketing, enséñalo aplicado al marketing.
+- Usa marcos y métricas reales (AIDA, PAS, jobs to be done, LTV/CAC, ROAS, CTR, tasa de conversión) y explícalos con palabras llanas.
+- No inventes datos, estudios, benchmarks del sector ni cifras de empresas reales. Si aparece un número, que sea aritmética de ejemplo y se vea de dónde sale ("inviertes 100 €, facturas 300 €: ROAS de 3").
+- Nada de hacks, atajos ni promesas de resultados garantizados. Cada plano deja algo que el espectador pueda aplicar mañana en un negocio pequeño.
+- Varía la puesta en escena, los diagramas, la distancia de cámara y los cortes entre planos contiguos.
+- No repitas narraciones, aperturas ni acciones visuales.
+- Usa planos de refuerzo donde la duración larga agradezca respirar.
+- Incluye exactamente tres preguntas de continuación distintas y naturales en suggestedTopics. Profundizan o ramifican desde esta clase sin repetir su tema.
+- Sé riguroso para un público curioso que no es experto en marketing.
+- Devuelve el JSON de inmediato, sin preámbulo ni análisis.`;
 }
 
 function fallbackSuggestedTopics(input: {
@@ -314,9 +323,9 @@ function fallbackSuggestedTopics(input: {
 }): readonly [string, string, string] {
   const fit = (value: string) => value.trim().slice(0, 500);
   return [
-    fit(`How does ${input.title} show up in everyday life?`),
-    fit(`What is a common misconception about ${input.topic}?`),
-    fit(`What should I understand next after learning: ${input.bigQuestion}`),
+    fit(`¿Cómo se aplica ${input.title} en un negocio pequeño y con poco presupuesto?`),
+    fit(`¿Cuál es el error más frecuente con ${input.topic}?`),
+    fit(`¿Qué métrica debería mirar después de entender esto: ${input.bigQuestion}`),
   ];
 }
 
@@ -381,7 +390,7 @@ export async function prepareLesson(input: {
         falKey: input.falKey,
         prompt: preparationPrompt(input.topic, sceneCount, repairBlock(repairError)),
         systemPrompt:
-          "You are a fast, accurate curriculum designer. Return only the requested JSON and distribute one lesson across distinct short visual beats.",
+          "Eres un diseñador de currículo de marketing, rápido y riguroso. Devuelve solo el JSON pedido y reparte una única clase en planos visuales cortos y distintos entre sí.",
         maxTokens: LESSON_PLANNER_CONFIG.preparationMaxTokens,
         route,
       });
@@ -416,10 +425,10 @@ export async function prepareLesson(input: {
     ok: false,
     message:
       firstError instanceof ApiError
-        ? "Both fal lesson-planning routes were unavailable. H3 was not called, so no video credits were spent. Retry the lesson."
+        ? "Las dos rutas de planificación de fal no estaban disponibles. No se llamó a H3, así que no se ha gastado crédito de vídeo. Vuelve a intentar la clase."
         : firstError instanceof Error
         ? firstError.message
-        : "The lesson planner could not prepare this topic.",
+        : "El planificador no ha podido preparar esta clase.",
     plannerAttemptsUsed: 2,
   };
 }

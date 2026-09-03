@@ -8,13 +8,13 @@ const inconsolata = Inconsolata({
 });
 
 export const metadata: Metadata = {
-  title: "Live Classroom",
-  description: "A live TV channel of 1970s-cartoon lessons generated with MiniMax H3 Max, with a program guide for queueing what plays next.",
+  title: "Canal Megafón · clases de marketing en directo",
+  description: "Un canal de televisión que da clases de marketing: dibujos animados de los años 70 generados con MiniMax H3 Max y una guía para encolar la siguiente clase.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html className={inconsolata.variable} lang="en">
+    <html className={inconsolata.variable} lang="es">
       <body>{children}</body>
     </html>
   );

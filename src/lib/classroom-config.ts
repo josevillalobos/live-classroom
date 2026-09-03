@@ -4,26 +4,34 @@ import type {
   LessonSceneCount,
 } from "@/lib/classroom-types";
 
+// Lessons are spoken in Castilian Spanish, but every prompt sent to fal stays in English: H3's prompt
+// rewriter reasons in English and mangles Spanish instructions. Only the narration line the teacher
+// says out loud is Spanish, and the prompt says so explicitly.
+export const LESSON_LANGUAGE = {
+  label: "castellano (español de España)",
+  promptLabel: "European Castilian Spanish as spoken in Spain",
+} as const;
+
 // The teacher is fully described here and nowhere else. To ship your own character: rewrite
 // characterSheet (short numbered lines — fal's prompt rewriter copies lists verbatim but compresses
-// prose and silently drops features), set name/showName/voice, and replace public/tung-standing.png.
+// prose and silently drops features), set name/showName/voice, and replace public/teacher-standing.png.
 export const TEACHER = {
-  name: "Tung",
-  showName: "Tung Tung Tung TV",
+  name: "Megafón",
+  showName: "Canal Megafón",
   voice:
-    "a warm medium-pitch adult male voice with a clear standard American English accent (never British or any other regional accent) and an enthusiastic but relaxed rhythmic delivery",
+    "a warm medium-pitch adult male voice speaking European Castilian Spanish as spoken in Spain (never Latin American Spanish, never English, never any other language or regional accent) with an enthusiastic but relaxed rhythmic delivery",
   characterSheet: [
-    "1. Body: one tall, straight, narrow wooden log, four times taller than wide, with a flat rounded top.",
-    "2. Color: warm caramel brown as a solid flat fill, with three thin dark vertical grain lines.",
-    "3. Eyes: two huge round white eyes with brown irises and black pupils, set close together high on the log.",
+    "1. Body: one tall upright cartoon megaphone standing on its narrow end, a straight cone that flares into a wide round bell at the top, four times taller than wide.",
+    "2. Color: warm mustard yellow as a solid flat fill, with one thick burnt-orange band around the rim of the bell.",
+    "3. Eyes: two huge round white eyes with brown irises and black pupils, set close together high on the cone just below the bell.",
     "4. Eyebrows: thick arched dark-brown eyebrows above the eyes.",
     "5. Nose: a clearly visible simple cartoon nose in the middle of the face, between the eyes and the mouth.",
     "6. Cheeks: two round bulging cheeks, one on each side of the face under the eyes.",
     "7. Mouth: a big expressive cartoon mouth with white teeth that moves in sync with every word he says (clear lip sync); he only settles into his wide friendly grin between sentences.",
-    "8. Arms: two long thin wooden stick arms with simple three-fingered hands; one hand holds a plain wooden baseball bat at his side in every scene.",
-    "9. Legs: two very long thin wooden stick legs. Proportions: if the log body is 4 units tall, each leg is 3 units long, so the bottom of the log sits high off the ground and he stands tall like a stilt-walker. Big flat bare wooden feet with toes.",
+    "8. Arms: two long thin stick arms with simple three-fingered hands; one hand holds a fat red marker pen at his side in every scene.",
+    "9. Legs: two very long thin stick legs. Proportions: if the cone body is 4 units tall, each leg is 3 units long, so the bottom of the cone sits high off the ground and he stands tall like a stilt-walker. Big flat rounded cartoon shoes.",
     "10. Nothing else on him: no clothing, no tie, no hat, no hair, no glasses, no accessories.",
-    "11. Drawn as flat 2D cel art with black ink outlines and solid fills; never 3D, never glossy, never wood-textured.",
+    "11. Drawn as flat 2D cel art with black ink outlines and solid fills; never 3D, never glossy, never metallic.",
   ],
 } as const;
 
@@ -44,13 +52,21 @@ export function compileH3ScenePrompt(input: H3SceneInput): string {
   const name = TEACHER.name;
   return [
     `${TEACHER_DESCRIPTION}\nVoice: ${TEACHER.voice}.`,
-    `Five-second 16:9 scene ${input.sceneNumber} of one continuous 1970s educational cartoon episode. ${name} is drawn exactly the same in every scene.`,
-    `Visual beat: ${beat}. Let the scene use natural editorial cuts, expressive staging, and camera movement when they help the explanation.`,
-    `${name} speaks this line with visible lip sync, their mouth shapes matching each word and their eyebrows and gestures animating with the delivery: "${input.narration.trim()}" ${name}'s voice is identical in every scene of this episode: ${TEACHER.voice}. Use clear narration and playful diegetic sound effects only. No background music or musical score; the player supplies one continuous soundtrack across scenes.`,
+    `Five-second 16:9 scene ${input.sceneNumber} of one continuous 1970s educational cartoon episode of a marketing show. ${name} is drawn exactly the same in every scene.`,
+    `Visual beat: ${beat}. Let the scene use natural editorial cuts, expressive staging, and camera movement when they help the explanation. Any lettering, label, or number drawn on screen is written in Spanish and kept to a few short words.`,
+    `${name} speaks this line out loud in ${LESSON_LANGUAGE.promptLabel} with visible lip sync, their mouth shapes matching each word and their eyebrows and gestures animating with the delivery: "${input.narration.trim()}" The line is spoken in Spanish exactly as written, never translated or dubbed into another language. ${name}'s voice is identical in every scene of this episode: ${TEACHER.voice}. Use clear narration and playful diegetic sound effects only. No background music or musical score; the player supplies one continuous soundtrack across scenes.`,
     `STYLE (mandatory): ${CLASSROOM_STYLE}. Never 3D, never CGI, never photorealistic, never modern digital vector art.`,
   ].join("\n\n");
 }
 
+// The four topics offered before the first lesson. They set the tone of the channel, so keep them
+// concrete marketing questions a small business would actually ask.
+export const LOBBY_TOPIC_PICKS = [
+  "Cómo escribir una oferta irresistible para un servicio de 500 €",
+  "Qué es un embudo de ventas y por dónde se rompe casi siempre",
+  "Cómo calcular el CAC y el LTV de un negocio pequeño",
+  "Cómo elegir el público de un anuncio sin quemar presupuesto",
+] as const;
 
 export const LESSON_DURATION_OPTIONS = [60, 120] as const satisfies readonly LessonDurationSeconds[];
 

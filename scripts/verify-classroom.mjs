@@ -48,7 +48,7 @@ try {
   const pageResponse = await fetch(baseUrl);
   const page = await pageResponse.text();
   check(pageResponse.status === 200, "home page responds with HTTP 200");
-  check(page.includes("What do you want to learn about?"), "home page renders the lobby");
+  check(page.includes("aprender hoy de marketing"), "home page renders the lobby");
 
   const sessionId = "classroom-no-spend-verification";
   const createResponse = await fetch(`${baseUrl}/api/classroom`, {
@@ -70,7 +70,7 @@ try {
     body: JSON.stringify({
       kind: "start",
       id: "command-no-spend-start",
-      topic: "Why does the Moon appear to change shape?",
+      topic: "¿Por qué se rompe un embudo de ventas en el paso al carrito?",
       durationSeconds: 60,
       atMs: Date.now(),
     }),
