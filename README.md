@@ -92,6 +92,12 @@ topic ──► planner (Gemini) ──► 12 beats ──► H3 Max Turbo, just
   seconds.
 - **The set** (`src/components/set/`) is hand-built with react-three-fiber: procedural textures,
   furniture, the CRT and AV cart, and set dressing.
+- **Phones** get a different shape, not a shrunken one. The guide docks to the bottom as a sheet that
+  starts collapsed to a now-playing bar (the CRT is what a phone screen is for) and opens on tap;
+  held sideways it goes back to the side, narrow and compact. Both scroll as a single surface —
+  nested scrollers fight each other under a thumb — and pad themselves with the safe-area insets.
+  The scene also drops screen-space ambient occlusion and caps the pixel ratio below 700px wide or
+  540px tall, since a phone is decoding video at the same time.
 
 ## Deploying
 

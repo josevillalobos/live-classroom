@@ -2,6 +2,7 @@
 
 import {
   Suspense,
+  useEffect,
   useMemo,
   useRef,
   type ReactNode,
@@ -32,6 +33,12 @@ type ClassroomSetProps = Readonly<{
   children: ReactNode;
 }>;
 
+// A phone, either way up: too little GPU for screen-space ambient occlusion at full pixel ratio while a
+// video decodes on top. Height catches the landscape case that a width test alone reads as a desktop.
+function isHandheld(size: Readonly<{ width: number; height: number }>): boolean {
+  return size.width < 700 || size.height < 540;
+}
+
 function stageOffset(viewportWidth: number): number {
   if (viewportWidth < 700) return 0;
   if (viewportWidth < 1100) return -2.15;
@@ -49,9 +56,9 @@ function CameraMove({ active }: Readonly<{ active: boolean }>) {
     const stageX = stageOffset(size.width);
     if (active) {
       const pan = narrow ? 0 : 0.55;
-      // On phones the program guide covers the lower half, so frame the TV into the top of the view.
-      targetPosition.set(stageX + pan, narrow ? 3.4 : 4.2, narrow ? 3.4 : 1.65);
-      targetLookAt.set(stageX + pan, narrow ? 2.85 : 4.17, -1.15);
+      // On phones the guide sits as a bar along the bottom, so fill the space above it with the CRT.
+      targetPosition.set(stageX + pan, narrow ? 3.6 : 4.2, narrow ? 2.7 : 1.65);
+      targetLookAt.set(stageX + pan, narrow ? 3.42 : 4.17, -1.15);
     } else {
       targetPosition.set(stageX, narrow ? 4.2 : 4.6, narrow ? 13.8 : 14.6);
       targetLookAt.set(stageX, 2.85, -2.4);
@@ -82,10 +89,15 @@ function FluorescentLight({ position }: Readonly<{ position: Position }>) {
 }
 
 function Classroom({ active, children }: ClassroomSetProps) {
-  const { size } = useThree();
+  const { size, setDpr } = useThree();
   const stageX = stageOffset(size.width);
   const narrow = size.width < 700;
+  const handheld = isHandheld(size);
   const textures = useClassroomTextures();
+
+  useEffect(() => {
+    setDpr(handheld ? 1.2 : Math.min(window.devicePixelRatio, 1.5));
+  }, [handheld, setDpr]);
   return (
     <>
       <CameraMove active={active} />
@@ -194,11 +206,18 @@ function Classroom({ active, children }: ClassroomSetProps) {
       <Sparkles color="#ffedc9" count={40} opacity={0.13} position={[0, 3, 2]} scale={[10, 7, 9]} size={1.5} speed={0.08} />
       <ContactShadows far={16} opacity={0.32} position={[0, -0.98, 1]} scale={24} />
 
-      <EffectComposer>
-        <N8AO aoRadius={0.9} distanceFalloff={0.6} halfRes intensity={3.6} quality="medium" />
-        <Bloom intensity={0.45} luminanceThreshold={1} mipmapBlur />
-        <Vignette darkness={0.55} eskil={false} offset={0.24} />
-      </EffectComposer>
+      {handheld ? (
+        <EffectComposer>
+          <Bloom intensity={0.45} luminanceThreshold={1} mipmapBlur />
+          <Vignette darkness={0.55} eskil={false} offset={0.24} />
+        </EffectComposer>
+      ) : (
+        <EffectComposer>
+          <N8AO aoRadius={0.9} distanceFalloff={0.6} halfRes intensity={3.6} quality="medium" />
+          <Bloom intensity={0.45} luminanceThreshold={1} mipmapBlur />
+          <Vignette darkness={0.55} eskil={false} offset={0.24} />
+        </EffectComposer>
+      )}
     </>
   );
 }

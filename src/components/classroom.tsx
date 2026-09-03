@@ -31,6 +31,9 @@ export function Classroom() {
   const [queueingTopic, setQueueingTopic] = useState<string | null>(null);
   const [autoAdvanceCancelled, setAutoAdvanceCancelled] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
+  // Phones only: the guide starts as a bar over the CRT and opens into a sheet. The desktop
+  // layout ignores the class, so defaulting to closed needs no viewport check at render time.
+  const [guideOpen, setGuideOpen] = useState(false);
   const phase = snapshot?.phase ?? "idle";
   const experienceActive = snapshot !== null && snapshot.production.kind !== "idle";
   const music = useContinuousSoundtrack(
@@ -225,20 +228,29 @@ export function Classroom() {
       )}
 
       {experienceActive && (
-        <aside className="chat-overlay guide">
+        <aside className={`chat-overlay guide ${guideOpen ? "guide-open" : "guide-collapsed"}`}>
           <header className="guide-header">
             <span aria-hidden="true" className="teacher-avatar teacher-avatar-mini" />
-            <div>
+            <div className="guide-identity">
               <strong>Guía del canal</strong>
             </div>
             <div className="guide-actions">
+              <button
+                aria-controls="guide-body"
+                aria-expanded={guideOpen}
+                className="guide-toggle"
+                onClick={() => setGuideOpen((open) => !open)}
+                type="button"
+              >
+                {guideOpen ? "Cerrar ▾" : "Parrilla ▴"}
+              </button>
               <button disabled={!classroom.actions.canClear} onClick={() => void classroom.actions.clear()} type="button">
                 Nueva clase
               </button>
             </div>
           </header>
 
-          <div className="guide-body">
+          <div className="guide-body" id="guide-body">
             <section className="guide-now">
               <div className="guide-now-head">
                 <strong>{snapshot?.lesson?.title ?? current?.topic ?? snapshot?.topic ?? "Sintonizando"}</strong>

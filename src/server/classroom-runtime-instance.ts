@@ -19,7 +19,7 @@ function createRuntime(): ClassroomPlaylistRuntime {
     prepare: async ({ topic, durationSeconds }) => {
       const key = falKey();
       if (!key) {
-        return { ok: false, message: "FAL_KEY is missing.", plannerAttemptsUsed: 1 };
+        return { ok: false, message: "Falta FAL_KEY.", plannerAttemptsUsed: 1 };
       }
       return prepareLesson({ topic, durationSeconds, falKey: key });
     },
@@ -30,7 +30,7 @@ function createRuntime(): ClassroomPlaylistRuntime {
         return {
           ok: false,
           reason: "render-failed",
-          message: "FAL_KEY is missing. Add it to .env.local and restart the app.",
+          message: "Falta FAL_KEY. Añádela a .env.local y reinicia la app.",
         };
       }
       let generated;
